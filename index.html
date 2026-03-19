@@ -139,7 +139,7 @@ body::before{
 /* ══════════════════════════════════════════
    LOBBY SCREEN
    ══════════════════════════════════════════ */
-#lobbyScreen{flex-direction:column;align-items:center;justify-content:center;padding:20px}
+#lobbyScreen{flex-direction:column;align-items:center;justify-content:center;padding:20px;min-height:100vh}
 .lcard{background:var(--card);border:1px solid var(--bdr2);border-radius:20px;padding:28px;width:100%;max-width:500px;box-shadow:0 30px 80px rgba(0,0,0,.6)}
 .lhdr{display:flex;align-items:center;gap:12px;margin-bottom:22px}
 .bk-btn{width:36px;height:36px;background:var(--s1);border:1px solid var(--bdr);border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--txt2);font-size:1rem;transition:all .2s;flex-shrink:0}
@@ -208,50 +208,50 @@ body::before{
 .pbg.rnk{background:rgba(240,192,64,.12);color:var(--gold)}
 
 /* ═══════════════════════════════════════
-   FLAT NEON DICE — completely new style
+   3D CUBE DICE — proper CSS 3D transform
    ═══════════════════════════════════════ */
 .dice-zone{display:flex;flex-direction:column;align-items:center;gap:11px}
-.die-frame{
-  width:88px;height:88px;position:relative;
-  background:var(--s1);
-  border:2px solid var(--bdr2);
-  border-radius:18px;
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:inset 0 0 20px rgba(0,0,0,.5),0 4px 20px rgba(0,0,0,.5);
-  overflow:hidden;
-  transition:box-shadow .3s;
+.die-scene{perspective:320px;width:84px;height:84px}
+.die-cube{
+  width:84px;height:84px;
+  position:relative;transform-style:preserve-3d;
+  transition:transform 0.95s cubic-bezier(0.22,0.61,0.36,1);
 }
-.die-frame.rolling{
-  animation:dieBump .08s ease-in-out infinite;
-  box-shadow:inset 0 0 20px rgba(0,0,0,.5),0 0 30px var(--die-glow,var(--neon1)),0 4px 20px rgba(0,0,0,.5);
+.die-cube.rolling{animation:cubeRoll 1s cubic-bezier(0.22,0.61,0.36,1) forwards}
+@keyframes cubeRoll{
+  0%  {transform:rotateX(0)   rotateY(0)   rotateZ(0)}
+  15% {transform:rotateX(200deg) rotateY(120deg) rotateZ(60deg)}
+  35% {transform:rotateX(400deg) rotateY(300deg) rotateZ(140deg)}
+  55% {transform:rotateX(580deg) rotateY(210deg) rotateZ(230deg)}
+  75% {transform:rotateX(660deg) rotateY(390deg) rotateZ(300deg)}
+  90% {transform:rotateX(710deg) rotateY(455deg) rotateZ(335deg)}
+  100%{transform:var(--die-final,rotateX(0) rotateY(0))}
 }
-@keyframes dieBump{0%,100%{transform:scale(1) rotate(0deg)}25%{transform:scale(1.04) rotate(-2deg)}75%{transform:scale(1.04) rotate(2deg)}}
-.die-face-display{
+.die-face{
+  position:absolute;width:84px;height:84px;
+  border-radius:14px;
+  background:linear-gradient(145deg,#fffdf0,#f5e070);
+  border:3px solid #c48a00;
   display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);
-  width:66px;height:66px;gap:3px;
-  transition:opacity .15s;
+  padding:6px;gap:1px;
+  box-shadow:inset 0 3px 6px rgba(255,255,255,0.9),inset 0 -3px 6px rgba(0,0,0,0.15);
 }
-.die-frame.rolling .die-face-display{animation:faceFlicker .12s step-end infinite}
-@keyframes faceFlicker{0%,100%{opacity:1}50%{opacity:.3}}
 .die-pip{
-  width:16px;height:16px;border-radius:50%;
+  width:14px;height:14px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#7c3800,#1a0800);
+  box-shadow:inset 0 1px 3px rgba(0,0,0,0.5),0 1px 2px rgba(255,255,255,0.1);
   align-self:center;justify-self:center;
-  background:var(--die-pip,var(--neon1));
-  box-shadow:0 0 8px var(--die-pip,var(--neon1));
-  transition:background .2s,box-shadow .2s;
 }
-.die-pip.off{background:transparent;box-shadow:none}
-.die-result-num{
-  position:absolute;bottom:4px;right:7px;
-  font-family:'Oxanium',sans-serif;font-size:.7rem;font-weight:800;
-  color:rgba(255,255,255,.25);
-}
-/* each player colour as die glow */
-.die-p0{--die-glow:#f0c040;--die-pip:#f0c040}
-.die-p1{--die-glow:#ff4d6d;--die-pip:#ff4d6d}
-.die-p2{--die-glow:#00e5cc;--die-pip:#00e5cc}
-.die-p3{--die-glow:#a78bfa;--die-pip:#a78bfa}
-.die-p4{--die-glow:#fb923c;--die-pip:#fb923c}
+.die-pip.off{visibility:hidden}
+/* face positions - standard die layout */
+.face-f{transform:translateZ(42px)}
+.face-b{transform:rotateY(180deg) translateZ(42px)}
+.face-r{transform:rotateY(90deg)  translateZ(42px)}
+.face-l{transform:rotateY(-90deg) translateZ(42px)}
+.face-t{transform:rotateX(90deg)  translateZ(42px)}
+.face-bt{transform:rotateX(-90deg) translateZ(42px)}
+/* final rotation per face value */
+
 
 .turn-lbl{font-weight:800;font-size:.85rem;color:var(--gold);text-align:center}
 .bonus-tag{display:none;background:rgba(0,245,212,.1);border:1px solid rgba(0,245,212,.3);border-radius:50px;padding:5px 14px;font-size:.75rem;font-weight:800;color:var(--neon1);text-align:center;animation:bonceIn .35s cubic-bezier(.34,1.56,.64,1)}
@@ -476,9 +476,15 @@ tr:hover td{background:rgba(255,255,255,.015)}
       <div class="gc">
         <div class="gc-ttl">Dice</div>
         <div class="dice-zone">
-          <div class="die-frame die-p0" id="dieFrame">
-            <div class="die-face-display" id="dieFace"></div>
-            <div class="die-result-num" id="dieNum"></div>
+          <div class="die-scene">
+            <div class="die-cube" id="dieCube" style="transform:rotateX(0deg) rotateY(0deg)">
+              <div class="die-face face-f" id="dF1"></div>
+              <div class="die-face face-b" id="dF6"></div>
+              <div class="die-face face-r" id="dF3"></div>
+              <div class="die-face face-l" id="dF4"></div>
+              <div class="die-face face-t" id="dF2"></div>
+              <div class="die-face face-bt" id="dF5"></div>
+            </div>
           </div>
           <div class="turn-lbl" id="tlbl">–</div>
           <div class="bonus-tag" id="btag">🎉 Rolled 6 — Extra Turn!</div>
@@ -538,7 +544,7 @@ tr:hover td{background:rgba(255,255,255,.015)}
 /* ══════════════════════════════════════════════
    CONFIG — UPDATE WITH YOUR RENDER URL
    ══════════════════════════════════════════════ */
-const SERVER = 'https://backend-59gk.onrender.com';
+const SERVER = 'https://YOUR-RENDER-APP.onrender.com';
 // For local dev: const SERVER = 'http://localhost:3000';
 const API = SERVER + '/api';
 
@@ -594,7 +600,7 @@ function confirmHome(){
    ══════════════════════════════════════════════ */
 window.addEventListener('DOMContentLoaded',()=>{
   if(token && me){ applySession(); showScreen('homeScreen'); }
-  renderDieFace(null); // blank die
+  initDie();
 });
 
 function applySession(){
@@ -1250,194 +1256,282 @@ function drawTokens(ctx){
       ctx.fillStyle='#fff';ctx.font=`900 ${r*.75}px Nunito`;
       ctx.textAlign='center';ctx.textBaseline='middle';
       ctx.shadowColor='rgba(0,0,0,.6)';ctx.shadowBlur=4;
-      ctx.fillText(p.name[0].toUpperCase(),px,py);
+      ctx.fillText(p.displayName[0].toUpperCase(),px,py);
       ctx.restore();
     });
   }
 }
 
 /* ══════════════════════════════════════════════
-   SVG OVERLAY — Segmented pixel snake + ladder
+/* ══════════════════════════════════════════════
+   SVG OVERLAY — snakes + ladders
    ══════════════════════════════════════════════ */
 function buildSVGOverlay(){
   const svg=document.getElementById('svgOver');
   svg.innerHTML='';
-  for(const[h,t] of Object.entries(SNAKES)) drawSegSnake(svg,+h,+t);
-  for(const[b,top] of Object.entries(LADDERS)) drawLadder(svg,+b,+top);
+
+  /* --- DEFS: blur filter + all ladder gradients first --- */
+  const defs=document.createElementNS('http://www.w3.org/2000/svg','defs');
+
+  // Snake glow blur
+  const fil=document.createElementNS('http://www.w3.org/2000/svg','filter');
+  fil.setAttribute('id','snBlur');fil.setAttribute('x','-60%');fil.setAttribute('y','-60%');
+  fil.setAttribute('width','220%');fil.setAttribute('height','220%');
+  const fe=document.createElementNS('http://www.w3.org/2000/svg','feGaussianBlur');
+  fe.setAttribute('stdDeviation','5');fil.appendChild(fe);defs.appendChild(fil);
+
+  // Ladder gradients
+  for(const [bN,tN] of Object.entries(LADDERS)){
+    const bc=cellCtr(+bN),tc=cellCtr(+tN);
+    const gr=document.createElementNS('http://www.w3.org/2000/svg','linearGradient');
+    gr.setAttribute('id','ldg'+bN);gr.setAttribute('gradientUnits','userSpaceOnUse');
+    gr.setAttribute('x1',String(bc.x));gr.setAttribute('y1',String(bc.y));
+    gr.setAttribute('x2',String(tc.x));gr.setAttribute('y2',String(tc.y));
+    [['0%','#92400e'],['45%','#f59e0b'],['55%','#fbbf24'],['100%','#d97706']].forEach(([o,c])=>{
+      const s=document.createElementNS('http://www.w3.org/2000/svg','stop');
+      s.setAttribute('offset',o);s.setAttribute('stop-color',c);gr.appendChild(s);
+    });
+    defs.appendChild(gr);
+  }
+  svg.appendChild(defs);
+
+  // Draw ladders first (behind snakes)
+  for(const [b,top] of Object.entries(LADDERS)) drawLadderSVG(svg,+b,+top);
+  // Draw snakes on top
+  for(const [h,t] of Object.entries(SNAKES)) drawSnakeSVG(svg,+h,+t);
 }
 
-/* NEW SNAKE: thick segmented tube with diamond pattern, no bezier */
-function drawSegSnake(svg, headN, tailN){
-  const hc=cellCtr(headN), tc=cellCtr(tailN);
-  const cs=cellSz;
+/* ── SNAKE ── */
+function drawSnakeSVG(svg,headN,tailN){
+  const hc=cellCtr(headN),tc=cellCtr(tailN),cs=cellSz;
+  const pts=snakePath(headN,tailN);
 
-  // Build path through intermediate cells for a natural route
-  const pts=buildSnakePath(headN,tailN);
-
-  // Create smooth polyline through waypoints
-  let d=`M${pts[0].x},${pts[0].y}`;
+  let d='M'+f2(pts[0].x)+','+f2(pts[0].y);
   for(let i=1;i<pts.length;i++){
-    // Catmull-Rom style: use midpoints as control
     if(i<pts.length-1){
-      const mx=(pts[i].x+pts[i+1].x)/2, my=(pts[i].y+pts[i+1].y)/2;
-      d+=` Q${pts[i].x},${pts[i].y} ${mx},${my}`;
+      const mx=f2((pts[i].x+pts[i+1].x)/2),my=f2((pts[i].y+pts[i+1].y)/2);
+      d+=' Q'+f2(pts[i].x)+','+f2(pts[i].y)+' '+mx+','+my;
     } else {
-      d+=` L${pts[i].x},${pts[i].y}`;
+      d+=' L'+f2(pts[i].x)+','+f2(pts[i].y);
     }
   }
 
-  const sw=cs*.28;
+  const sw=cs*0.27;
 
-  // 1. Glow halo
-  const glow=el('path',{d,stroke:'rgba(34,197,94,.18)',['stroke-width']:sw*2.2,fill:'none',['stroke-linecap']:'round',['stroke-linejoin']:'round',filter:'url(#snBlur)'});
-  svg.appendChild(glow);
+  // outer glow
+  const pg=mkEl('path'); pg.setAttribute('d',d);
+  pg.setAttribute('stroke','rgba(34,197,94,0.22)');
+  pg.setAttribute('stroke-width',f2(sw*2.1));
+  pg.setAttribute('fill','none');pg.setAttribute('stroke-linecap','round');
+  pg.setAttribute('filter','url(#snBlur)');svg.appendChild(pg);
 
-  // 2. Body shadow
-  const shad=el('path',{d,stroke:'rgba(0,40,10,.7)',['stroke-width']:sw,fill:'none',['stroke-linecap']:'round',['stroke-linejoin']:'round'});
-  shad.setAttribute('transform','translate(2,2)'); svg.appendChild(shad);
+  // drop shadow
+  const ps=mkEl('path'); ps.setAttribute('d',d);
+  ps.setAttribute('stroke','rgba(0,25,8,0.9)');
+  ps.setAttribute('stroke-width',f2(sw));
+  ps.setAttribute('fill','none');ps.setAttribute('stroke-linecap','round');
+  ps.setAttribute('transform','translate(2.5,2.5)');svg.appendChild(ps);
 
-  // 3. Main body — dark green
-  const body=el('path',{d,stroke:'#166534',['stroke-width']:sw,fill:'none',['stroke-linecap']:'round',['stroke-linejoin']:'round'});
-  svg.appendChild(body);
+  // main body dark
+  const pb=mkEl('path'); pb.setAttribute('d',d);
+  pb.setAttribute('stroke','#14532d');
+  pb.setAttribute('stroke-width',f2(sw));
+  pb.setAttribute('fill','none');pb.setAttribute('stroke-linecap','round');
+  svg.appendChild(pb);
 
-  // 4. Scale diamonds — dashed bright overlay
-  const scl=el('path',{d,stroke:'#22c55e',['stroke-width']:sw*.65,fill:'none',
-    ['stroke-linecap']:'round',['stroke-dasharray']:`${cs*.22} ${cs*.14}`,['stroke-dashoffset']:'0'});
-  svg.appendChild(scl);
+  // mid-tone
+  const pm=mkEl('path'); pm.setAttribute('d',d);
+  pm.setAttribute('stroke','#166534');
+  pm.setAttribute('stroke-width',f2(sw*0.78));
+  pm.setAttribute('fill','none');pm.setAttribute('stroke-linecap','round');
+  svg.appendChild(pm);
 
-  // 5. Bright centre spine
-  const spine=el('path',{d,stroke:'rgba(134,239,172,.4)',['stroke-width']:sw*.22,fill:'none',['stroke-linecap']:'round'});
-  svg.appendChild(spine);
+  // bright scale dashes
+  const psc=mkEl('path'); psc.setAttribute('d',d);
+  psc.setAttribute('stroke','#4ade80');
+  psc.setAttribute('stroke-width',f2(sw*0.62));
+  psc.setAttribute('fill','none');psc.setAttribute('stroke-linecap','round');
+  psc.setAttribute('stroke-dasharray',f2(cs*0.21)+' '+f2(cs*0.13));
+  svg.appendChild(psc);
 
-  // 6. HEAD — hexagonal shape
-  buildSnakeHead(svg, hc, pts, cs);
+  // spine highlight
+  const psp=mkEl('path'); psp.setAttribute('d',d);
+  psp.setAttribute('stroke','rgba(187,247,208,0.4)');
+  psp.setAttribute('stroke-width',f2(sw*0.20));
+  psp.setAttribute('fill','none');psp.setAttribute('stroke-linecap','round');
+  svg.appendChild(psp);
 
-  // 7. TAIL tip
-  const tailTip=el('circle',{cx:tc.x,cy:tc.y,r:cs*.07,fill:'#15803d',stroke:'#4ade80',['stroke-width']:'1.5'});
-  svg.appendChild(tailTip);
+  // head
+  snakeHead(svg,hc,pts,cs);
 
-  // 8. Number badges
-  numBadge(svg,headN,hc.x,hc.y-cs*.25,'#f43f5e',cs);
-  numBadge(svg,tailN,tc.x,tc.y+cs*.22,'#4ade80',cs);
+  // tail dot
+  const tt=mkEl('circle');
+  tt.setAttribute('cx',f2(tc.x));tt.setAttribute('cy',f2(tc.y));
+  tt.setAttribute('r',f2(cs*0.07));
+  tt.setAttribute('fill','#15803d');tt.setAttribute('stroke','#86efac');tt.setAttribute('stroke-width','1.5');
+  svg.appendChild(tt);
 
-  // Blur filter (once)
-  if(!svg.querySelector('#snBlur')){
-    const defs=document.createElementNS('http://www.w3.org/2000/svg','defs');
-    const fil=document.createElementNS('http://www.w3.org/2000/svg','filter');
-    fil.setAttribute('id','snBlur');
-    const fe=document.createElementNS('http://www.w3.org/2000/svg','feGaussianBlur');
-    fe.setAttribute('stdDeviation','4');
-    fil.appendChild(fe); defs.appendChild(fil); svg.insertBefore(defs,svg.firstChild);
-  }
+  numBadge(svg,headN,hc.x,hc.y-cs*0.27,'#f87171',cs);
+  numBadge(svg,tailN,tc.x,tc.y+cs*0.28,'#86efac',cs);
 }
 
-function buildSnakePath(headN, tailN){
-  // Build a path that naturally curves from head cell to tail cell
-  // via intermediate row waypoints
-  const hTL=cellTL(headN), tTL=cellTL(tailN);
-  const hctr=cellCtr(headN), tctr=cellCtr(tailN);
-  const cs=cellSz;
-
-  const pts=[hctr];
-  // Determine midpoint cells to route through
-  const hRow=9-Math.floor((hTL.y)/cs), tRow=9-Math.floor((tTL.y)/cs);
-  const rowCount=Math.abs(hRow-tRow);
-  if(rowCount>1){
+function snakePath(hN,tN){
+  const hc=cellCtr(hN),tc=cellCtr(tN),cs=cellSz;
+  const hRow=Math.floor((hN-1)/10),tRow=Math.floor((tN-1)/10);
+  const pts=[hc];
+  if(Math.abs(hRow-tRow)>1){
     const dir=hRow>tRow?-1:1;
-    for(let r=1;r<rowCount;r++){
-      const midRow=hRow+dir*r;
-      const y=(9-midRow)*cs+cs/2;
-      // Alternate x position for snake wiggle
-      const x=r%2===0?cs*2.5:cs*7.5;
-      pts.push({x,y});
+    const total=Math.abs(hRow-tRow);
+    for(let r=1;r<total;r++){
+      const mRow=hRow+dir*r;
+      const cy=(9-mRow)*cs+cs/2;
+      const cx=r%2===0?cs*2+cs/2:cs*7+cs/2;
+      pts.push({x:cx,y:cy});
     }
   } else {
-    // Same row or adjacent — add a mid-point offset
-    const mx=(hctr.x+tctr.x)/2;
-    const my=(hctr.y+tctr.y)/2 + (hctr.x<tctr.x?-cs*1.5:cs*1.5);
-    pts.push({x:mx,y:my});
+    const mx=(hc.x+tc.x)/2,my=(hc.y+tc.y)/2;
+    const perp=cs*1.8;
+    pts.push({x:mx+(hc.y>tc.y?-perp:perp),y:my});
   }
-  pts.push(tctr);
+  pts.push(tc);
   return pts;
 }
 
-function buildSnakeHead(svg, hc, pts, cs){
-  // Direction from head toward body
-  const next=pts[1]||{x:hc.x,y:hc.y+cs};
-  const ang=Math.atan2(next.y-hc.y, next.x-hc.x);
-  const r=cs*.18;
+function snakeHead(svg,hc,pts,cs){
+  const next=pts.length>1?pts[1]:{x:hc.x,y:hc.y+cs};
+  const ang=Math.atan2(next.y-hc.y,next.x-hc.x);
+  const r=cs*0.19;
 
-  // Head hex points
-  const hexPts=[];
+  // glow hex
+  const hg=hexPath(hc,r*1.6,ang);
+  const ghEl=mkEl('path');ghEl.setAttribute('d',hg);ghEl.setAttribute('fill','rgba(74,222,128,0.18)');
+  ghEl.setAttribute('filter','url(#snBlur)');svg.appendChild(ghEl);
+
+  // head fill
+  const hd=hexPath(hc,r,ang);
+  const hfEl=mkEl('path');hfEl.setAttribute('d',hd);hfEl.setAttribute('fill','#166534');
+  hfEl.setAttribute('stroke','#4ade80');hfEl.setAttribute('stroke-width','2');svg.appendChild(hfEl);
+
+  // inner shine
+  const hi=hexPath(hc,r*0.55,ang);
+  const hiEl=mkEl('path');hiEl.setAttribute('d',hi);hiEl.setAttribute('fill','rgba(134,239,172,0.18)');
+  svg.appendChild(hiEl);
+
+  // eyes
+  const eOff=r*0.52,eR=r*0.22;
+  [ang+Math.PI/2.3,ang-Math.PI/2.3].forEach(a=>{
+    const ex=hc.x+Math.cos(a)*eOff,ey=hc.y+Math.sin(a)*eOff;
+    const ew=mkEl('circle');ew.setAttribute('cx',f2(ex));ew.setAttribute('cy',f2(ey));
+    ew.setAttribute('r',f2(eR));ew.setAttribute('fill','#fef9c3');svg.appendChild(ew);
+    const ep=mkEl('circle');
+    ep.setAttribute('cx',f2(ex+Math.cos(ang)*eR*0.35));
+    ep.setAttribute('cy',f2(ey+Math.sin(ang)*eR*0.35));
+    ep.setAttribute('r',f2(eR*0.55));ep.setAttribute('fill','#0c0a00');svg.appendChild(ep);
+    const eg=mkEl('circle');
+    eg.setAttribute('cx',f2(ex+Math.cos(ang-0.5)*eR*0.5));
+    eg.setAttribute('cy',f2(ey+Math.sin(ang-0.5)*eR*0.5));
+    eg.setAttribute('r',f2(eR*0.2));eg.setAttribute('fill','rgba(255,255,255,0.8)');svg.appendChild(eg);
+  });
+
+  // tongue
+  const tBase=r+cs*0.04;
+  const tx=hc.x+Math.cos(ang)*tBase,ty=hc.y+Math.sin(ang)*tBase;
+  const tl=cs*0.10,ts=0.42;
+  const td='M'+f2(hc.x+Math.cos(ang)*r*0.95)+','+f2(hc.y+Math.sin(ang)*r*0.95)
+    +' L'+f2(tx)+','+f2(ty)
+    +' L'+f2(tx+Math.cos(ang-ts)*tl)+','+f2(ty+Math.sin(ang-ts)*tl)
+    +' M'+f2(tx)+','+f2(ty)
+    +' L'+f2(tx+Math.cos(ang+ts)*tl)+','+f2(ty+Math.sin(ang+ts)*tl);
+  const tEl=mkEl('path');tEl.setAttribute('d',td);tEl.setAttribute('stroke','#ef4444');
+  tEl.setAttribute('stroke-width',f2(cs*0.03));tEl.setAttribute('stroke-linecap','round');
+  tEl.setAttribute('fill','none');svg.appendChild(tEl);
+}
+
+function hexPath(center,r,ang){
+  const pts=[];
   for(let i=0;i<6;i++){
-    const a=ang+Math.PI/6+i*Math.PI/3;
-    hexPts.push([hc.x+Math.cos(a)*r, hc.y+Math.sin(a)*r]);
+    const a=ang+Math.PI/6+i*(Math.PI/3);
+    pts.push(f2(center.x+Math.cos(a)*r)+','+f2(center.y+Math.sin(a)*r));
   }
-  const hexD='M'+hexPts.map(p=>p.join(',')).join('L')+'Z';
-
-  // Glow
-  svg.appendChild(el('path',{d:hexD,fill:'rgba(34,197,94,.2)',filter:'url(#snBlur)'}));
-  // Body
-  svg.appendChild(el('path',{d:hexD,fill:'#15803d',stroke:'#4ade80',['stroke-width']:'2'}));
-  // Highlight
-  svg.appendChild(el('path',{d:hexD,fill:'none',stroke:'rgba(134,239,172,.5)',['stroke-width']:'1'}));
-
-  // Eyes
-  const eOff=r*.55, eR=r*.2;
-  const eA1=ang+Math.PI/2.2, eA2=ang-Math.PI/2.2;
-  [[eA1,'#fef9c3'],[eA2,'#fef9c3']].forEach(([a,c])=>{
-    const ex=hc.x+Math.cos(a)*eOff, ey=hc.y+Math.sin(a)*eOff;
-    svg.appendChild(el('circle',{cx:ex,cy:ey,r:eR,fill:c}));
-    svg.appendChild(el('circle',{cx:ex+Math.cos(ang)*eR*.4,cy:ey+Math.sin(ang)*eR*.4,r:eR*.5,fill:'#1a0a00'}));
-  });
-
-  // Forked tongue
-  const tx=hc.x+Math.cos(ang)*(r+cs*.05), ty=hc.y+Math.sin(ang)*(r+cs*.05);
-  const tl=cs*.09;
-  const tongD=`M${hc.x+Math.cos(ang)*r},${hc.y+Math.sin(ang)*r} L${tx},${ty} L${tx+Math.cos(ang-.45)*tl},${ty+Math.sin(ang-.45)*tl} M${tx},${ty} L${tx+Math.cos(ang+.45)*tl},${ty+Math.sin(ang+.45)*tl}`;
-  svg.appendChild(el('path',{d:tongD,stroke:'#ef4444',['stroke-width']:cs*.028,['stroke-linecap']:'round',fill:'none'}));
+  return 'M'+pts.join('L')+'Z';
 }
 
-/* LADDER — I-beam style with gradient */
-function drawLadder(svg, baseN, topN){
-  const bc=cellCtr(baseN), tc=cellCtr(topN);
-  const cs=cellSz;
-  const dx=tc.x-bc.x, dy=tc.y-bc.y;
+/* ── LADDER ── */
+function drawLadderSVG(svg,baseN,topN){
+  const bc=cellCtr(baseN),tc=cellCtr(topN),cs=cellSz;
+  const dx=tc.x-bc.x,dy=tc.y-bc.y;
   const len=Math.sqrt(dx*dx+dy*dy);
-  const nx=-dy/len*cs*.105, ny=dx/len*cs*.105;
-
-  // Create gradient
+  const nx=-dy/len*cs*0.105,ny=dx/len*cs*0.105;
   const gid='ldg'+baseN;
-  const defs=svg.querySelector('defs')||svg.appendChild(document.createElementNS('http://www.w3.org/2000/svg','defs'));
-  const grad=document.createElementNS('http://www.w3.org/2000/svg','linearGradient');
-  grad.setAttribute('id',gid); grad.setAttribute('gradientUnits','userSpaceOnUse');
-  grad.setAttribute('x1',bc.x); grad.setAttribute('y1',bc.y);
-  grad.setAttribute('x2',tc.x); grad.setAttribute('y2',tc.y);
-  const gs=[['0%','#b45309'],['50%','#fbbf24'],['100%','#f59e0b']];
-  gs.forEach(([o,c])=>{const s=document.createElementNS('http://www.w3.org/2000/svg','stop');s.setAttribute('offset',o);s.setAttribute('stop-color',c);grad.appendChild(s);});
-  if(svg.querySelector('defs')) svg.querySelector('defs').appendChild(grad);
-  else{const d=document.createElementNS('http://www.w3.org/2000/svg','defs');d.appendChild(grad);svg.insertBefore(d,svg.firstChild);}
 
-  // Shadow rails
-  [[bc.x-nx,bc.y-ny,tc.x-nx,tc.y-ny],[bc.x+nx,bc.y+ny,tc.x+nx,tc.y+ny]].forEach(([x1,y1,x2,y2])=>{
-    svg.appendChild(el('line',{x1:x1+2,y1:y1+2,x2:x2+2,y2:y2+2,stroke:'rgba(0,0,0,.5)',['stroke-width']:cs*.075,['stroke-linecap']:'round'}));
+  const rails=[[bc.x-nx,bc.y-ny,tc.x-nx,tc.y-ny],[bc.x+nx,bc.y+ny,tc.x+nx,tc.y+ny]];
+
+  // shadow rails
+  rails.forEach(([x1,y1,x2,y2])=>{
+    const s=mkEl('line');
+    s.setAttribute('x1',f2(x1+2));s.setAttribute('y1',f2(y1+2));
+    s.setAttribute('x2',f2(x2+2));s.setAttribute('y2',f2(y2+2));
+    s.setAttribute('stroke','rgba(0,0,0,0.6)');
+    s.setAttribute('stroke-width',f2(cs*0.085));s.setAttribute('stroke-linecap','round');
+    svg.appendChild(s);
   });
-  // Rails
-  [[bc.x-nx,bc.y-ny,tc.x-nx,tc.y-ny],[bc.x+nx,bc.y+ny,tc.x+nx,tc.y+ny]].forEach(([x1,y1,x2,y2])=>{
-    svg.appendChild(el('line',{x1,y1,x2,y2,stroke:`url(#${gid})`,['stroke-width']:cs*.072,['stroke-linecap']:'round'}));
-    svg.appendChild(el('line',{x1,y1,x2,y2,stroke:'rgba(255,255,255,.25)',['stroke-width']:cs*.022,['stroke-linecap']:'round'}));
+  // main rails
+  rails.forEach(([x1,y1,x2,y2])=>{
+    const r=mkEl('line');
+    r.setAttribute('x1',f2(x1));r.setAttribute('y1',f2(y1));
+    r.setAttribute('x2',f2(x2));r.setAttribute('y2',f2(y2));
+    r.setAttribute('stroke','url(#'+gid+')');
+    r.setAttribute('stroke-width',f2(cs*0.078));r.setAttribute('stroke-linecap','round');
+    svg.appendChild(r);
+    const sh=mkEl('line');
+    sh.setAttribute('x1',f2(x1));sh.setAttribute('y1',f2(y1));
+    sh.setAttribute('x2',f2(x2));sh.setAttribute('y2',f2(y2));
+    sh.setAttribute('stroke','rgba(255,255,255,0.28)');
+    sh.setAttribute('stroke-width',f2(cs*0.022));sh.setAttribute('stroke-linecap','round');
+    svg.appendChild(sh);
   });
-  // Rungs
-  const rc=Math.max(4,Math.round(len/(cs*.65)));
+
+  // rungs
+  const rc=Math.max(4,Math.round(len/(cs*0.62)));
   for(let i=1;i<rc;i++){
-    const t=i/rc, rx=bc.x+dx*t, ry=bc.y+dy*t;
-    svg.appendChild(el('line',{x1:rx-nx*1.25+1,y1:ry-ny*1.25+1,x2:rx+nx*1.25+1,y2:ry+ny*1.25+1,stroke:'rgba(0,0,0,.3)',['stroke-width']:cs*.06,['stroke-linecap']:'round'}));
-    svg.appendChild(el('line',{x1:rx-nx*1.25,y1:ry-ny*1.25,x2:rx+nx*1.25,y2:ry+ny*1.25,stroke:`url(#${gid})`,['stroke-width']:cs*.058,['stroke-linecap']:'round'}));
-    svg.appendChild(el('line',{x1:rx-nx*1.25,y1:ry-ny*1.25,x2:rx+nx*1.25,y2:ry+ny*1.25,stroke:'rgba(255,255,255,.2)',['stroke-width']:cs*.018,['stroke-linecap']:'round'}));
+    const t=i/rc,rx=bc.x+dx*t,ry=bc.y+dy*t;
+    const rs=mkEl('line');
+    rs.setAttribute('x1',f2(rx-nx*1.3+1.5));rs.setAttribute('y1',f2(ry-ny*1.3+1.5));
+    rs.setAttribute('x2',f2(rx+nx*1.3+1.5));rs.setAttribute('y2',f2(ry+ny*1.3+1.5));
+    rs.setAttribute('stroke','rgba(0,0,0,0.4)');
+    rs.setAttribute('stroke-width',f2(cs*0.07));rs.setAttribute('stroke-linecap','round');
+    svg.appendChild(rs);
+    const rg=mkEl('line');
+    rg.setAttribute('x1',f2(rx-nx*1.3));rg.setAttribute('y1',f2(ry-ny*1.3));
+    rg.setAttribute('x2',f2(rx+nx*1.3));rg.setAttribute('y2',f2(ry+ny*1.3));
+    rg.setAttribute('stroke','url(#'+gid+')');
+    rg.setAttribute('stroke-width',f2(cs*0.065));rg.setAttribute('stroke-linecap','round');
+    svg.appendChild(rg);
+    const rsh=mkEl('line');
+    rsh.setAttribute('x1',f2(rx-nx*1.3));rsh.setAttribute('y1',f2(ry-ny*1.3));
+    rsh.setAttribute('x2',f2(rx+nx*1.3));rsh.setAttribute('y2',f2(ry+ny*1.3));
+    rsh.setAttribute('stroke','rgba(255,255,255,0.2)');
+    rsh.setAttribute('stroke-width',f2(cs*0.02));rsh.setAttribute('stroke-linecap','round');
+    svg.appendChild(rsh);
   }
-  numBadge(svg,baseN,bc.x,bc.y+cs*.26,'#fbbf24',cs);
-  numBadge(svg,topN,tc.x,tc.y-cs*.2,'#4ade80',cs);
+
+  // end caps
+  [bc,tc].forEach(p=>{
+    const c=mkEl('circle');
+    c.setAttribute('cx',f2(p.x));c.setAttribute('cy',f2(p.y));
+    c.setAttribute('r',f2(cs*0.09));
+    c.setAttribute('fill','url(#'+gid+')');
+    c.setAttribute('stroke','rgba(255,255,255,0.35)');c.setAttribute('stroke-width','1.5');
+    svg.appendChild(c);
+  });
+
+  numBadge(svg,baseN,bc.x,bc.y+cs*0.29,'#fbbf24',cs);
+  numBadge(svg,topN,tc.x,tc.y-cs*0.23,'#86efac',cs);
 }
+
+/* helpers */
+function mkEl(tag){ return document.createElementNS('http://www.w3.org/2000/svg',tag); }
+function f2(n){ return (Math.round(n*100)/100).toString(); }
 
 function numBadge(svg,n,x,y,col,cs){
   const lbl=String(n), w=cs*.24+(lbl.length>1?cs*.06:0);
@@ -1455,9 +1549,9 @@ function el(tag,attrs){
 }
 
 /* ══════════════════════════════════════════════
-   FLAT NEON DICE — completely new
+   3D CUBE DICE
    ══════════════════════════════════════════════ */
-const PIP_LAYOUT={
+const PIPS={
   1:[[0,0,0],[0,1,0],[0,0,0]],
   2:[[1,0,0],[0,0,0],[0,0,1]],
   3:[[1,0,0],[0,1,0],[0,0,1]],
@@ -1465,54 +1559,42 @@ const PIP_LAYOUT={
   5:[[1,0,1],[0,1,0],[1,0,1]],
   6:[[1,0,1],[1,0,1],[1,0,1]]
 };
+// Standard die: opposite faces sum to 7
+// Front=1,Back=6,Right=3,Left=4,Top=2,Bottom=5
+const FACE_VAL={dF1:1,dF6:6,dF3:3,dF4:4,dF2:2,dF5:5};
+const VAL_ROT={1:'rotateX(0deg) rotateY(0deg)',2:'rotateX(-90deg) rotateY(0deg)',3:'rotateY(90deg)',4:'rotateY(-90deg)',5:'rotateX(90deg)',6:'rotateY(180deg)'};
 
-function renderDieFace(val){
-  const face=document.getElementById('dieFace');
-  const num=document.getElementById('dieNum');
-  face.innerHTML='';
-  if(val===null){
-    // blank / question mark
-    const q=document.createElement('div');
-    q.style.cssText='width:66px;height:66px;display:flex;align-items:center;justify-content:center;font-size:2rem;color:rgba(255,255,255,.15);font-family:Oxanium';
-    q.textContent='?'; face.appendChild(q);
-    if(num) num.textContent='';
-    return;
-  }
-  const layout=PIP_LAYOUT[val];
-  layout.forEach(row=>row.forEach(on=>{
-    const d=document.createElement('div');
-    d.className='die-pip'+(on?'':' off');
-    face.appendChild(d);
-  }));
-  if(num) num.textContent=val;
-}
-
-let dieRollTimer=null;
-async function animateDie(result, playerIdx){
-  const frame=document.getElementById('dieFrame');
-  // Set colour class based on player
-  frame.className='die-frame die-p'+(playerIdx%5);
-  frame.classList.add('rolling');
-
-  // Flash random faces
-  let flashes=0;
-  const totalFlashes=12;
-  await new Promise(res=>{
-    function flashNext(){
-      const rnd=Math.floor(Math.random()*6)+1;
-      renderDieFace(rnd);
-      flashes++;
-      if(flashes<totalFlashes){
-        setTimeout(flashNext, 40+flashes*6);
-      } else {
-        renderDieFace(result);
-        frame.classList.remove('rolling');
-        res();
-      }
-    }
-    flashNext();
+function buildAllFaces(result){
+  // Render all 6 faces with correct pip layouts
+  Object.entries(FACE_VAL).forEach(([id,val])=>{
+    const face=document.getElementById(id);
+    if(!face) return;
+    face.innerHTML='';
+    PIPS[val].forEach(row=>row.forEach(on=>{
+      const p=document.createElement('div');
+      p.className='die-pip'+(on?'':' off');
+      face.appendChild(p);
+    }));
   });
+  const cube=document.getElementById('dieCube');
+  if(cube) cube.style.setProperty('--die-final',VAL_ROT[result]||VAL_ROT[1]);
 }
+
+async function animateDie(result, playerIdx){
+  buildAllFaces(result);
+  const cube=document.getElementById('dieCube');
+  if(!cube) return;
+  // Clear and re-trigger animation
+  cube.classList.remove('rolling');
+  void cube.offsetWidth; // reflow
+  cube.classList.add('rolling');
+  await sleep(1020);
+  cube.classList.remove('rolling');
+  cube.style.transform=VAL_ROT[result];
+}
+
+// Initialise die faces on load
+function initDie(){ buildAllFaces(1); }
 
 /* ══════════════════════════════════════════════
    UI
@@ -1521,10 +1603,6 @@ function updateTurnUI(){
   if(!G) return;
   const p=G.players[G.curIdx];
   document.getElementById('tlbl').textContent=`${p.displayName}'s Turn`;
-
-  // Colour die to current player
-  const frame=document.getElementById('dieFrame');
-  frame.className='die-frame die-p'+(G.curIdx%5);
 
   const isMyTurn = isBotGame ? !p.isBot : (p.username===me?.username);
   document.getElementById('rollBtn').disabled = !isMyTurn || G.over || isAnimating;
